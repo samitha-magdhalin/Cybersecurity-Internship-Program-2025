@@ -1,23 +1,36 @@
-# Cybersecurity-Internship-Program-2025
-Intern Name: Samitha Muthyala
-This is the official repository for my internship under Digisuraksha Parhari Foundation conducted from July–September 2025.
+# 🛡️ Cybersecurity Internship Program 2025
 
-Weekly Tasks
-Each week comprises practical exercises, reports, and research deliverables focused on:
+**Intern Name:** Samitha Muthyala  
+**Organization:** Digisuraksha Parhari Foundation  
+**Duration:** July – September 2025
 
-Folder Structure
-MITRE ATT&CK Mapping
-Malware Analysis
-Linux Privilege Escalation
-OSINT & Recon
-Web Application Security
-Vulnerable VM Exploitation
-Log Analysis and Threat Hunting
+---
+
+## 📘 About the Repository
+
+This is the **official GitHub repository** for my internship under the **Digisuraksha Parhari Foundation**, focused on hands-on training in key areas of cybersecurity. The internship spans across 3 months and includes weekly assignments, practical labs, and research documentation.
+
+---
+
+## 📅 Weekly Tasks
+
+Each week covers specialized topics with practical exercises, documentation, and submissions:
+
+- ✅ MITRE ATT&CK Mapping  
+- 🦠 Malware Analysis  
+- 🐧 Linux Privilege Escalation  
+- 🔍 OSINT & Reconnaissance  
+- 🌐 Web Application Security  
+- 💻 Vulnerable VM Exploitation  
+- 📊 Log Analysis & Threat Hunting
+
+Each task includes:
+- Step-by-step reports
+- Screenshots of practicals
+- IOC/YARA rule submissions
+- Final weekly summaries
+
+---
 
 
-All work is organized weekly with documentation, screenshots,
-YARA rules, IOCs, and final reports.
 
-Attendance System
-Attendance is tracked using flag screenshots for
-Microsoft Teams/Meet sessions, uploaded under /Attendance/Week-X/.
