@@ -1,5 +1,5 @@
 # Cybersecurity-Internship-Program-2025
-Intern Name: Samitha Muthyala#
+Intern Name: Samitha Muthyala
 This is the official repository for my internship under Digisuraksha Parhari Foundation conducted from July–September 2025.
 
 Weekly Tasks
