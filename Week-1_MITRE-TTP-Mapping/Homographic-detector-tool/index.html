@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Homographic Detector Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background-color: #f2f2f2;
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      width: 300px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-left: 10px;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .legit { color: green; }
+    .suspicious { color: red; }
+  </style>
+</head>
+<body>
+  <h1>🛡️Homographic Detector Tool<h1>
+  <p>Enter a domain to check if it's suspicious.</p>
+
+  <input type="text" id="domainInput" placeholder="Enter domain">
+  <button onclick="checkDomain()">Check</button>
+
+  <div class="result" id="resultText"></div>
+
+  <script>
+      const whitelist = [
+  "google.com",
+  "facebook.com",
+  "youtube.com",
+  "amazon.com",
+  "apple.com",
+  "twitter.com",
+  "linkedin.com",
+  "instagram.com",
+  "microsoft.com",
+  "paypal.com",
+  "netflix.com",
+  "whatsapp.com",
+  "snapchat.com",
+  "github.com",
+  "stackoverflow.com",
+  "reddit.com",
+  "quora.com",
+  "myntra.com",
+  "flipkart.com",
+  "meesho.com",
+  "tiktok.com",
+  "zoom.us",
+  "adobe.com",
+  "dropbox.com",
+  "icloud.com",
+  "outlook.com",
+  "live.com",
+  "office.com",
+  "bing.com",
+  "yahoo.com",
+  "duckduckgo.com",
+  "booking.com",
+  "airbnb.com",
+  "swiggy.com",
+  "zomato.com",
+  "canva.com",
+  "walmart.com",
+  "target.com",
+  "pinterest.com",
+  "indeed.com",
+  "glassdoor.com",
+  "coursera.org",
+  "udemy.com",
+  "edx.org",
+  "khanacademy.org",
+  "byjus.com",
+  "openai.com",
+  "chat.openai.com",
+  "medium.com",
+  "w3schools.com",
+  "geeksforgeeks.org",
+  "codepen.io",
+  "codesandbox.io",
+  "replit.com",
+  "naukri.com",
+  "monster.com",
+  "hackerone.com",
+  "bugcrowd.com",
+  "mail.google.com",
+  "drive.google.com",
+  "github.dev",
+  "github.io",
+  "niyukti.gov.in",
+  "aicte-india.org",
+  "mygov.in",
+  "cbse.gov.in",
+  "digitalindia.gov.in",
+  "uidai.gov.in",
+  "india.gov.in",
+  "irctc.co.in",
+  "sbi.co.in",
+  "hdfcbank.com",
+  "icicibank.com",
+  "axisbank.com",
+  "paypal.me",
+  "telegram.org",
+  "discord.com",
+  "slack.com",
+  "proton.me",
+  "cloudflare.com",
+  "godaddy.com",
+  "namecheap.com",
+  "bluehost.com",
+  "wordpress.com",
+  "shopify.com",
+  "nike.com",
+  "adidas.com",
+  "samsung.com",
+  "xiaomi.com",
+  "oppo.com",
+  "oneplus.in",
+  "realme.com",
+  "mi.com",
+  "motorola.com",
+  "dell.com",
+  "hp.com",
+  "asus.com",
+  "lenovo.com",
+  "acer.com",
+  "sony.com",
+  "lg.com",
+  "panasonic.com",
+  "philips.com",
+  "tesla.com",
+  "spacex.com",
+  "uber.com",
+  "ola.com",
+  "dominos.com",
+  "pizzahut.com",
+  "kfc.com",
+  "mcdonalds.com"
+];
+
+
+    // Simple visual similarity confusion map
+   const confusables = {
+  // Cyrillic to Latin
+  'а': 'a', 'А': 'A',       // Cyrillic a
+  'е': 'e', 'Е': 'E',       // Cyrillic e
+  'о': 'o', 'О': 'O',       // Cyrillic o
+  'с': 'c', 'С': 'C',       // Cyrillic c
+  'р': 'p', 'Р': 'P',       // Cyrillic p
+  'х': 'x', 'Х': 'X',       // Cyrillic x
+  'у': 'y', 'У': 'Y',       // Cyrillic y
+  'і': 'i', 'І': 'I',       // Cyrillic i
+  'к': 'k', 'К': 'K',       // Cyrillic k
+  'в': 'b', 'В': 'B',       // Cyrillic b
+  'м': 'm', 'М': 'M',       // Cyrillic m
+  'н': 'h', 'Н': 'H',       // Cyrillic h
+  'т': 't', 'Т': 'T',       // Cyrillic t
+  'ё': 'e', 'Ё': 'E',       // Cyrillic yo
+  'д': 'd', 'Д': 'D',       // Cyrillic d
+  'г': 'g', 'Г': 'G',       // Cyrillic g
+  'л': 'n', 'Л': 'N',       // Cyrillic l
+  'п': 'n', 'П': 'N',       // Cyrillic p
+
+  // Greek to Latin
+  'α': 'a', 'Α': 'A',       // Greek alpha
+  'β': 'b', 'Β': 'B',       // Greek beta
+  'γ': 'y', 'Γ': 'Y',       // Greek gamma
+  'δ': 'd', 'Δ': 'D',       // Greek delta
+  'ε': 'e', 'Ε': 'E',       // Greek epsilon
+  'η': 'n', 'Η': 'N',       // Greek eta
+  'ι': 'i', 'Ι': 'I',       // Greek iota
+  'λ': 'l', 'Λ': 'L',       // Greek lambda
+  'μ': 'm', 'Μ': 'M',       // Greek mu
+  'ν': 'v', 'Ν': 'V',       // Greek nu
+  'ο': 'o', 'Ο': 'O',       // Greek omicron
+  'ρ': 'p', 'Ρ': 'P',       // Greek rho
+  'τ': 't', 'Τ': 'T',       // Greek tau
+  'χ': 'x', 'Χ': 'X',       // Greek chi
+  'ζ': 'z', 'Ζ': 'Z',       // Greek zeta
+
+  // Other Unicode Confusables
+  'ϲ': 'c',  // Greek lunate sigma
+  'ԁ': 'd',  // Cyrillic small letter soft d
+  'ԛ': 'q',  // Cyrillic q
+  'ӏ': 'l',  // Cyrillic straight l
+  'Ꭵ': 'i',  // Cherokee i
+  'Ɩ': 'i',  // Latin i variant
+  'Ƨ': '2',  // Stylized 2
+  'Ƽ': '5',  // Stylized 5
+  'ʀ': 'r',  // Latin small capital R
+  'ʟ': 'l',  // Latin small capital L
+  'ʏ': 'y',  // Latin small capital Y
+  'ʘ': 'o',  // Dot in o
+  'ͻ': 'o',  // Hook o
+  'ɡ': 'g',  // Latin g
+  'ɩ': 'i',  // Latin i
+  'ʃ': 's',  // Latin s
+  'ʒ': 'z',  // Latin z
+
+  // Digits to lookalike letters
+  '0': 'o',
+  '1': 'l',
+  '3': 'e',
+  '5': 's',
+  '7': 't',
+  '8': 'b',
+
+  // Lookalike letters/symbols
+  '@': 'a',
+  '!': 'i',
+  '|': 'l',
+  '$': 's',
+  '+': 't',
+  '€': 'e',
+  '£': 'l',
+  '¥': 'y'
+};
+
+
+    function normalize(str) {
+      return str.toLowerCase().split('').map(char =>
+        confusables[char] || char
+      ).join('');
+    }
+
+    function levenshtein(a, b) {
+      const matrix = Array(a.length + 1).fill(null).map(() =>
+        Array(b.length + 1).fill(null)
+      );
+
+      for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+      for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+
+      for (let i = 1; i <= a.length; i++) {
+        for (let j = 1; j <= b.length; j++) {
+          const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+          matrix[i][j] = Math.min(
+            matrix[i - 1][j] + 1,
+            matrix[i][j - 1] + 1,
+            matrix[i - 1][j - 1] + cost
+          );
+        }
+      }
+      return matrix[a.length][b.length];
+    }
+
+    function checkDomain() {
+      const input = document.getElementById('domainInput').value.trim();
+      const base = input.split('.').slice(-2).join('.'); // extract domain + TLD
+
+      const normalizedInput = normalize(base);
+
+      for (const legit of whitelist) {
+        const legitBase = legit.split('.').slice(-2).join('.');
+        const normalizedLegit = normalize(legitBase);
+
+        if (normalizedInput === normalizedLegit) {
+          document.getElementById('resultText').innerHTML =
+            `✅ <span class="legit">${input}</span> appears legitimate.`;
+          return;
+        }
+
+        if (levenshtein(normalizedInput, normalizedLegit) <= 2) {
+          document.getElementById('resultText').innerHTML =
+            `⚠️ <span class="suspicious">${input}</span> is suspicious (looks like ${legit}).`;
+          return;
+        }
+      }
+
+      document.getElementById('resultText').innerHTML =
+        `⚠️ <span class="suspicious">${input}</span> is not in the trusted list.`;
+    }
+  </script>
+</body>
+</html>
